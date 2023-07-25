@@ -1,0 +1,5 @@
+node_modules/*
+notes-app-back-end/*
+notes-app-back-end.zip
+package-lock.json
+.DS_Store
