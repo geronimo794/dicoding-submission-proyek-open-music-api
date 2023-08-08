@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import {InvariantError} from '../../exceptions/InvariantError.js';
-import {NotFoundError} from '../../exceptions/NotFoundError.js';
+import InvariantError from '../../exceptions/InvariantError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 
 class NotesService {
 	constructor() {

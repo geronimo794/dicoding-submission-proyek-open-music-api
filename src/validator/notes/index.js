@@ -1,5 +1,5 @@
-import { NotePayloadSchema } from './schema';
-import {InvariantError} from '../../exceptions/InvariantError.js';
+import NotePayloadSchema from './schema.js';
+import InvariantError from '../../exceptions/InvariantError.js';
 
 const NotesValidator = {
 	validateNotePayload: (payload) => {

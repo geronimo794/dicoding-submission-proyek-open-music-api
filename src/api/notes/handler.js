@@ -1,4 +1,4 @@
-import {ClientError} from '../../exceptions/ClientError.js';
+import ClientError from '../../exceptions/ClientError.js';
 
 class NotesHandler {
 	constructor(service, validator) {
