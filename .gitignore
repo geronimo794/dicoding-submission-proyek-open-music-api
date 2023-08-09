@@ -6,3 +6,4 @@ package-lock.json
 
 # Environment variable
 .env
+.prod.env
