@@ -3,3 +3,6 @@ notes-app-back-end/*
 notes-app-back-end.zip
 package-lock.json
 .DS_Store
+
+# Environment variable
+.env
