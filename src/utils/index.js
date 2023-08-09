@@ -14,5 +14,5 @@ const mapDBToModel = ({
 	updatedAt: updated_at,
 });
    
-export default { mapDBToModel };
+export default mapDBToModel;
   

@@ -1,10 +1,10 @@
-import { Pool } from 'pg';
+import pgPkg from 'pg';
 import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapDBToModel from '../../utils/index.js';
 
-
+const { Pool } = pgPkg;
 
 class NotesService {
 	constructor() {
