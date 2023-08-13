@@ -2,7 +2,7 @@ import pgPkg from 'pg';
 import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import mapDBToModel from '../../utils/index.js';
+import mapNoteDBToModel from '../../mapping/note.js';
 
 const { Pool } = pgPkg;
 
@@ -29,7 +29,7 @@ class NotesService {
 	}
 	async getNotes() {
 		const result = await this._pool.query('SELECT * FROM notes');
-		return result.rows.map(mapDBToModel);
+		return result.rows.map(mapNoteDBToModel);
 	}
 	async getNoteById(id) {
 		const query = {
@@ -42,7 +42,7 @@ class NotesService {
 			throw new NotFoundError('Catatan tidak ditemukan');
 		}
 
-		return result.rows.map(mapDBToModel)[0];
+		return result.rows.map(mapNoteDBToModel)[0];
 	}
 	async editNoteById(id, { title, body, tags }) {
 		const updatedAt = new Date().toISOString();

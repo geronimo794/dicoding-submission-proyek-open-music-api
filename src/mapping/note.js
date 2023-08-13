@@ -1,4 +1,4 @@
-const mapDBToModel = ({ 
+const mapNoteDBToModel = ({ 
 	id,
 	title,
 	body,
@@ -14,5 +14,5 @@ const mapDBToModel = ({
 	updatedAt: updated_at,
 });
    
-export default mapDBToModel;
+export default mapNoteDBToModel;
   
