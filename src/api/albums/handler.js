@@ -17,13 +17,13 @@ class AlbumsHandler {
 
 			const { name, year } = request.payload;
 
-			const noteId = await this._service.addAlbum({ name, year });
+			const albumId = await this._service.addAlbum({ name, year });
 
 			const response = h.response({
 				status: 'success',
 				message: 'Catatan berhasil ditambahkan',
 				data: {
-					noteId,
+					albumId,
 				},
 			});
 			response.code(201);
@@ -49,22 +49,22 @@ class AlbumsHandler {
 		}
 	}
 	async getAlbumsHandler() {
-		const notes = await this._service.getAlbums();
+		const albums = await this._service.getAlbums();
 		return {
 			status: 'success',
 			data: {
-				notes,
+				albums: albums,
 			},
 		};
 	}
 	async getAlbumByIdHandler(request, h) {
 		try {
 			const { id } = request.params;
-			const note = await this._service.getAlbumById(id);
+			const data = await this._service.getAlbumById(id);
 			return {
 				status: 'success',
 				data: {
-					note,
+					album: data,
 				},
 			};
 		} catch (error) {

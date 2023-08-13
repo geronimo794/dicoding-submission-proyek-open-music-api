@@ -2,7 +2,7 @@ import pgPkg from 'pg';
 import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import mapDBToModel from '../../mapping/note.js';
+import mapAlbumDBToModel from '../../mapping/album.js';
 
 const { Pool } = pgPkg;
 
@@ -29,7 +29,7 @@ class AlbumsService {
 	}
 	async getAlbums() {
 		const result = await this._pool.query('SELECT * FROM albums');
-		return result.rows.map(mapDBToModel);
+		return result.rows.map(mapAlbumDBToModel);
 	}
 	async getAlbumById(id) {
 		const query = {
@@ -42,12 +42,12 @@ class AlbumsService {
 			throw new NotFoundError('Album tidak ditemukan');
 		}
 
-		return result.rows.map(mapDBToModel)[0];
+		return result.rows.map(mapAlbumDBToModel)[0];
 	}
 	async editAlbumById(id, { name, year }) {
 		const updatedAt = new Date().toISOString();
 		const query = {
-			text: 'UPDATE album SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
+			text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
 			values: [name, year, updatedAt, id],
 		};
 
