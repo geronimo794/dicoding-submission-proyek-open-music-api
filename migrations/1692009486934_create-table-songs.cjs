@@ -20,7 +20,7 @@ exports.up = pgm => {
 			notNull: true,
 		},
 		genre: {
-			type: 'INT',
+			type: 'VARCHAR(100)',
 			notNull: true,
 		},
 		performer: {
