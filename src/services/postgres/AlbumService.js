@@ -51,9 +51,7 @@ class AlbumsService {
 			values: [id],
 		};
 		const resultSongs = await this._pool.query(querySongs);
-		if (resultSongs.rows.length) {
-			data['songs'] = resultSongs.rows.map(mapSongDBToModel);
-		}
+		data['songs'] = resultSongs.rows.map(mapSongDBToModel);
 
 		return data;
 	}

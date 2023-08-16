@@ -27,8 +27,38 @@ class SongsService {
 		}
 		return result.rows[0].id;
 	}
-	async getSongs() {
-		const result = await this._pool.query('SELECT id, title, performer FROM songs');
+	async getSongs(title, performer) {
+		// Find condition
+		const bindParameters = [], conditions = [];
+		let bindNumber = 1;
+		if(title){
+			conditions.push('title ILIKE $'+bindNumber+'');
+			bindParameters.push('%' + title + '%');
+			bindNumber++;
+		}
+		if(performer){
+			conditions.push('performer ILIKE $'+bindNumber+'');
+			bindParameters.push('%' + performer + '%');
+			bindNumber++;
+		}
+
+		// Join string
+		let conditionQuery = '';
+		if(bindParameters.length > 0){
+			conditionQuery = 'WHERE ' + conditions.join(' AND ');
+		}
+
+		// Query execution
+		const query = {
+			text: 'SELECT id, title, performer FROM songs ' + conditionQuery,
+			values: bindParameters,
+		};		
+		const result = await this._pool.query(query);
+
+		// Throw not found
+		if (!result.rows.length) {
+			throw new NotFoundError('Song tidak ditemukan');
+		}
 		return result.rows.map(mapSongDBToModel);
 	}
 	async getSongById(id) {
