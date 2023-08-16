@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapAlbumDBToModel from '../../mapping/album.js';
+import mapSongDBToModel from '../../mapping/song.js';
 
 const { Pool } = pgPkg;
 
@@ -42,7 +43,19 @@ class AlbumsService {
 			throw new NotFoundError('Album tidak ditemukan');
 		}
 
-		return result.rows.map(mapAlbumDBToModel)[0];
+		const data = result.rows.map(mapAlbumDBToModel)[0];
+
+		// Get song data
+		const querySongs = {
+			text: 'SELECT * FROM songs WHERE album_id = $1',
+			values: [id],
+		};
+		const resultSongs = await this._pool.query(querySongs);
+		if (resultSongs.rows.length) {
+			data['songs'] = resultSongs.rows.map(mapSongDBToModel);
+		}
+
+		return data;
 	}
 	async editAlbumById(id, { name, year }) {
 		const updatedAt = new Date().toISOString();
