@@ -2,7 +2,7 @@
 
 exports.shorthands = undefined;
 
-exports.up = pgm => {
+exports.up = (pgm) => {
 	pgm.createTable('songs', {
 		// Id
 		id: {
@@ -45,9 +45,9 @@ exports.up = pgm => {
 			type: 'TEXT',
 			notNull: true,
 		},
-	});	
+	});
 };
 
-exports.down = pgm => {
+exports.down = (pgm) => {
 	pgm.dropTable('songs');
 };

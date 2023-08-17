@@ -1,5 +1,6 @@
 import BaseJoi from 'joi';
 import JoiDate from '@joi/date';
+
 const Joi = BaseJoi.extend(JoiDate);
 
 const SongPayloadSchema = Joi.object({
@@ -10,5 +11,5 @@ const SongPayloadSchema = Joi.object({
 	duration: Joi.number(),
 	albumId: Joi.string(),
 });
- 
+
 export default SongPayloadSchema;

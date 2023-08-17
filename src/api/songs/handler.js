@@ -1,66 +1,84 @@
-
+import ResponseHelper from '../../utils/ResponseHelper.js';
+/**
+ * Song Request Handler
+ */
 class SongsHandler {
+	/**
+	 * Constructor inject with function dependencies
+	 * @param {*} service
+	 * @param {*} validator
+	 */
 	constructor(service, validator) {
 		this._service = service;
 		this._validator = validator;
 	}
+	/**
+	 * Add single song handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
 	async postSongHandler(request, h) {
 		this._validator.validateSongPayload(request.payload);
 
-		const { title, year, genre, performer, duration, albumId } = request.payload;
+		const {title, year, genre, performer, duration, albumId} = request.payload;
+		const songId = await this._service.addSong(
+			{title, year, genre, performer, duration, albumId});
 
-		const songId = await this._service.addSong({ title, year, genre, performer, duration, albumId });
-
-		const response = h.response({
-			status: 'success',
-			message: 'Lagu berhasil ditambahkan',
-			data: {
-				songId,
-			},
-		});
-		response.code(201);
-		return response;
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_CREATED, {songId});
 	}
+	/**
+	 * Get list song handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
 	async getSongsHandler(request, h) {
-		const data = await this._service.getSongs(request.query.title, request.query.performer);
+		const data = await this._service.getSongs(
+			request.query.title, request.query.performer);
 
-		const response = h.response({
-			status: 'success',
-			data: {
-				songs: data,
-			},
-		});
-		response.code(200);
-		return response;
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_OK, {songs: data});
 	}
-	async getSongByIdHandler(request) {
-		const { id } = request.params;
+	/**
+	 * Get single song data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async getSongByIdHandler(request, h) {
+		const {id} = request.params;
 		const data = await this._service.getSongById(id);
-		return {
-			status: 'success',
-			data: {
-				song: data,
-			},
-		};
+
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_OK, {song: data});
 	}
-	async putSongByIdHandler(request) {
+	/**
+	 * Edit single song data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async putSongByIdHandler(request, h) {
 		this._validator.validateSongPayload(request.payload);
-		const { id } = request.params;
+		const {id} = request.params;
 
 		await this._service.editSongById(id, request.payload);
-
-		return {
-			status: 'success',
-			message: 'Lagu berhasil diperbarui',
-		};
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_UPDATED);
 	}
-	async deleteSongByIdHandler(request) {
-		const { id } = request.params;
+	/**
+	 * Delete single data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async deleteSongByIdHandler(request, h) {
+		const {id} = request.params;
 		await this._service.deleteSongById(id);
-		return {
-			status: 'success',
-			message: 'Lagu berhasil dihapus',
-		};
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_DELETED);
 	}
 }
 

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { server as _server } from '@hapi/hapi';
+import {server as _server} from '@hapi/hapi';
 // Albums API
 import albums from './api/albums/index.js';
 import AlbumService from './services/postgres/AlbumService.js';
@@ -25,7 +25,6 @@ const init = async () => {
 			},
 		},
 	});
- 
 	await server.register([{
 		plugin: albums,
 		options: {
@@ -41,30 +40,32 @@ const init = async () => {
 		},
 	}]);
 
-	
 	server.ext('onPreResponse', (request, h) => {
-		// mendapatkan konteks response dari request
-		const { response } = request;
+		// Get context from request
+		const {response} = request;
 		if (response instanceof Error) {
-
-			// mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.
+			// Jika error diluar error server, seperti route 404
+			// Tetap dihandle oleh hapi
 			if (!response.isServer) {
 				return h.continue;
 			}
 
-			// penanganan client error secara internal.
+			// Jika error adalah client error
 			if (response instanceof ClientError) {
 				return ResponseHelper.buildErrorResponse(h, response.message);
 			}
-			// penanganan server error sesuai kebutuhan
-			return ResponseHelper.buildErrorResponse(h, response.RESPONSE_INTERNAL_ERROR);
+
+			// Penanganan server jika error diluar client
+			return ResponseHelper.buildErrorResponse(h,
+				response.RESPONSE_INTERNAL_ERROR);
 		}
-		// jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
+
+		// Jika tidak ada error maka akan melanjutkan response
 		return h.continue;
 	});
-	
+
 	await server.start();
 	console.log(`Server berjalan pada ${server.info.uri}`);
 };
- 
+
 init();

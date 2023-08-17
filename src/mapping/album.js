@@ -1,4 +1,5 @@
-const mapAlbumDBToModel = ({ 
+/* eslint-disable camelcase */
+const mapAlbumDBToModel = ({
 	id,
 	name,
 	year,
@@ -11,6 +12,5 @@ const mapAlbumDBToModel = ({
 	createdAt: created_at,
 	updatedAt: updated_at,
 });
-   
+
 export default mapAlbumDBToModel;
-  

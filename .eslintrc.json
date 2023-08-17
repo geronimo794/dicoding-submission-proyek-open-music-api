@@ -5,7 +5,7 @@
         // Need this for node development
         "node": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "google"],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
@@ -26,7 +26,11 @@
         "semi": [
             "error",
             "always"
+        ],
+        "no-tabs": [
+            "error", { "allowIndentationTabs": true }
         ]
+
 
     }
 }

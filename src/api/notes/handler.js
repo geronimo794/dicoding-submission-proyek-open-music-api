@@ -1,63 +1,89 @@
-
+import ResponseHelper from '../../utils/ResponseHelper.js';
+/**
+ * Note Request Handler
+ */
 class NotesHandler {
+	/**
+	 * Constructor inject with function dependencies
+	 * @param {*} service
+	 * @param {*} validator
+	*/
 	constructor(service, validator) {
 		this._service = service;
 		this._validator = validator;
 	}
+	/**
+	 * Add note handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
 	async postNoteHandler(request, h) {
 		this._validator.validateNotePayload(request.payload);
 
-		const { title = 'untitled', body, tags } = request.payload;
+		const {title = 'untitled', body, tags} = request.payload;
+		const noteId = await this._service.addNote({title, body, tags});
 
-		const noteId = await this._service.addNote({ title, body, tags });
-
-		const response = h.response({
-			status: 'success',
-			message: 'Catatan berhasil ditambahkan',
-			data: {
-				noteId,
-			},
-		});
-		response.code(201);
-		return response;
+		return ResponseHelper.buildSuccessResponse(
+			h,
+			ResponseHelper.RESPONSE_CREATED,
+			{noteId});
 	}
-	async getNotesHandler() {
+	/**
+	 * Get list note data handler
+	 * @param {*} _
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async getNotesHandler(_, h) {
 		const notes = await this._service.getNotes();
-		return {
-			status: 'success',
-			data: {
-				notes,
-			},
-		};
+
+		return ResponseHelper.buildSuccessResponse(
+			h,
+			ResponseHelper.RESPONSE_OK,
+			{notes});
 	}
-	async getNoteByIdHandler(request) {
-		const { id } = request.params;
+	/**
+	 * Get single note data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async getNoteByIdHandler(request, h) {
+		const {id} = request.params;
 		const note = await this._service.getNoteById(id);
-		return {
-			status: 'success',
-			data: {
-				note,
-			},
-		};
+		return ResponseHelper.buildSuccessResponse(
+			h,
+			ResponseHelper.RESPONSE_OK,
+			{note});
 	}
-	async putNoteByIdHandler(request) {
+	/**
+	 * Edit single note data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async putNoteByIdHandler(request, h) {
 		this._validator.validateNotePayload(request.payload);
-		const { id } = request.params;
+		const {id} = request.params;
 
 		await this._service.editNoteById(id, request.payload);
-
-		return {
-			status: 'success',
-			message: 'Catatan berhasil diperbarui',
-		};
+		return ResponseHelper.buildSuccessResponse(
+			h,
+			ResponseHelper.RESPONSE_UPDATED);
 	}
-	async deleteNoteByIdHandler(request) {
-		const { id } = request.params;
+	/**
+	 * Delete single data handler
+	 * @param {*} request
+	 * @param {*} h
+	 * @return {*} response
+	 */
+	async deleteNoteByIdHandler(request, h) {
+		const {id} = request.params;
 		await this._service.deleteNoteById(id);
-		return {
-			status: 'success',
-			message: 'Catatan berhasil dihapus',
-		};
+		return ResponseHelper.buildSuccessResponse(
+			h,
+			ResponseHelper.RESPONSE_DELETED);
 	}
 }
 

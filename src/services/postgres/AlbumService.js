@@ -1,17 +1,28 @@
 import pgPkg from 'pg';
-import { nanoid } from 'nanoid';
+import {nanoid} from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapAlbumDBToModel from '../../mapping/album.js';
 import mapSongDBToModel from '../../mapping/song.js';
 import ResponseHelper from '../../utils/ResponseHelper.js';
-const { Pool } = pgPkg;
+const {Pool} = pgPkg;
 
+/**
+ * Album service function save to postgress
+ */
 class AlbumsService {
+	/**
+	 * Constructor to create new pool
+	 */
 	constructor() {
 		this._pool = new Pool();
 	}
-	async addAlbum({ name, year }) {
+	/**
+	 * Add album service to service
+	 * @param {*} param0 object of album
+	 * @return {string} string of inserted id
+	 */
+	async addAlbum({name, year}) {
 		const id = nanoid(16);
 		const createdAt = new Date().toISOString();
 		const updatedAt = createdAt;
@@ -28,10 +39,19 @@ class AlbumsService {
 		}
 		return result.rows[0].id;
 	}
+	/**
+	 * Get albums data list
+	 * @return {array} Array object of albums
+	 */
 	async getAlbums() {
 		const result = await this._pool.query('SELECT * FROM albums');
 		return result.rows.map(mapAlbumDBToModel);
 	}
+	/**
+	 * Get detail album by id
+	 * @param {*} id
+	 * @return {object} Object or error response
+	 */
 	async getAlbumById(id) {
 		const query = {
 			text: 'SELECT * FROM albums WHERE id = $1',
@@ -55,10 +75,17 @@ class AlbumsService {
 
 		return data;
 	}
-	async editAlbumById(id, { name, year }) {
+	/**
+	 * Edit album by id
+	 * @param {*} id
+	 * @param {*} param1 Object request of name and year
+	 */
+	async editAlbumById(id, {name, year}) {
 		const updatedAt = new Date().toISOString();
 		const query = {
-			text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
+			text: 'UPDATE albums '+
+				'SET name = $1, year = $2, updated_at = $3 '+
+				'WHERE id = $4 RETURNING id',
 			values: [name, year, updatedAt, id],
 		};
 
@@ -68,6 +95,10 @@ class AlbumsService {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
+	/**
+	 * Delete album by id
+	 * @param {*} id
+	 */
 	async deleteAlbumById(id) {
 		const query = {
 			text: 'DELETE FROM albums WHERE id = $1 RETURNING id',

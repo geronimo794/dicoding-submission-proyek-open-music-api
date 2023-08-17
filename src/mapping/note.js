@@ -1,4 +1,5 @@
-const mapNoteDBToModel = ({ 
+/* eslint-disable camelcase */
+const mapNoteDBToModel = ({
 	id,
 	title,
 	body,
@@ -13,6 +14,5 @@ const mapNoteDBToModel = ({
 	createdAt: created_at,
 	updatedAt: updated_at,
 });
-   
+
 export default mapNoteDBToModel;
-  

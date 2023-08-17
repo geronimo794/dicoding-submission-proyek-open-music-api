@@ -12,17 +12,17 @@ const routes = (handler) => [
 	{
 		method: 'GET',
 		path: '/songs/{id}',
-		handler: (request) => handler.getSongByIdHandler(request),
+		handler: (request, h) => handler.getSongByIdHandler(request, h),
 	},
 	{
 		method: 'PUT',
 		path: '/songs/{id}',
-		handler: (request) => handler.putSongByIdHandler(request),
+		handler: (request, h) => handler.putSongByIdHandler(request, h),
 	},
 	{
 		method: 'DELETE',
 		path: '/songs/{id}',
-		handler: (request) => handler.deleteSongByIdHandler(request),
+		handler: (request, h) => handler.deleteSongByIdHandler(request, h),
 	},
 ];
 export default routes;

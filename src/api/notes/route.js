@@ -7,22 +7,22 @@ const routes = (handler) => [
 	{
 		method: 'GET',
 		path: '/notes',
-		handler: () => handler.getNotesHandler(),
+		handler: (request, h) => handler.getNotesHandler(request, h),
 	},
 	{
 		method: 'GET',
 		path: '/notes/{id}',
-		handler: (request) => handler.getNoteByIdHandler(request),
+		handler: (request, h) => handler.getNoteByIdHandler(request, h),
 	},
 	{
 		method: 'PUT',
 		path: '/notes/{id}',
-		handler: (request) => handler.putNoteByIdHandler(request),
+		handler: (request, h) => handler.putNoteByIdHandler(request, h),
 	},
 	{
 		method: 'DELETE',
 		path: '/notes/{id}',
-		handler: (request) => handler.deleteNoteByIdHandler(request),
+		handler: (request, h) => handler.deleteNoteByIdHandler(request, h),
 	},
 ];
 export default routes;

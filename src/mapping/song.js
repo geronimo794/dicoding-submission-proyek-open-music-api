@@ -1,4 +1,5 @@
-const mapSongDBToModel = ({ 
+/* eslint-disable camelcase */
+const mapSongDBToModel = ({
 	id,
 	title,
 	year,
@@ -19,6 +20,5 @@ const mapSongDBToModel = ({
 	createdAt: created_at,
 	updatedAt: updated_at,
 });
-   
+
 export default mapSongDBToModel;
-  
