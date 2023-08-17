@@ -10,7 +10,8 @@ import SongService from './services/postgres/SongService.js';
 import SongValidator from './validator/songs/index.js';
 
 import ClientError from './exceptions/ClientError.js';
-
+// Get response helper
+import ResponseHelper from './utils/ResponseHelper.js';
 
 const init = async () => {
 	const albumsService = new AlbumService();
@@ -46,26 +47,17 @@ const init = async () => {
 		const { response } = request;
 		if (response instanceof Error) {
 
-			// penanganan client error secara internal.
-			if (response instanceof ClientError) {
-				const newResponse = h.response({
-					status: 'fail',
-					message: response.message,
-				});
-				newResponse.code(response.statusCode);
-				return newResponse;
-			}
 			// mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.
 			if (!response.isServer) {
 				return h.continue;
 			}
+
+			// penanganan client error secara internal.
+			if (response instanceof ClientError) {
+				return ResponseHelper.buildErrorResponse(h, response.message);
+			}
 			// penanganan server error sesuai kebutuhan
-			const newResponse = h.response({
-				status: 'error',
-				message: 'terjadi kegagalan pada server kami',
-			});
-			newResponse.code(500);
-			return newResponse;
+			return ResponseHelper.buildErrorResponse(h, response.RESPONSE_INTERNAL_ERROR);
 		}
 		// jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
 		return h.continue;

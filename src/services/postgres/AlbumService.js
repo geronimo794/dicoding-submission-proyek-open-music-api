@@ -4,7 +4,7 @@ import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapAlbumDBToModel from '../../mapping/album.js';
 import mapSongDBToModel from '../../mapping/song.js';
-
+import ResponseHelper from '../../utils/ResponseHelper.js';
 const { Pool } = pgPkg;
 
 class AlbumsService {
@@ -24,7 +24,7 @@ class AlbumsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows[0].id) {
-			throw new InvariantError('Album gagal ditambahkan');
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
 		}
 		return result.rows[0].id;
 	}
@@ -40,7 +40,7 @@ class AlbumsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Album tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 
 		const data = result.rows.map(mapAlbumDBToModel)[0];
@@ -65,7 +65,7 @@ class AlbumsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 	async deleteAlbumById(id) {
@@ -75,7 +75,7 @@ class AlbumsService {
 		};
 		const result = await this._pool.query(query);
 		if (!result.rows.length) {
-			throw new NotFoundError('Album gagal dihapus. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 }

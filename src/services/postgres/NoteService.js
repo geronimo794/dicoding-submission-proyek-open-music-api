@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapNoteDBToModel from '../../mapping/note.js';
+import ResponseHelper from '../../utils/ResponseHelper.js';
 
 const { Pool } = pgPkg;
 
@@ -23,7 +24,7 @@ class NotesService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows[0].id) {
-			throw new InvariantError('Catatan gagal ditambahkan');
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
 		}
 		return result.rows[0].id;
 	}
@@ -39,7 +40,7 @@ class NotesService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Catatan tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 
 		return result.rows.map(mapNoteDBToModel)[0];
@@ -54,7 +55,7 @@ class NotesService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Gagal memperbarui catatan. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 	async deleteNoteById(id) {
@@ -64,7 +65,7 @@ class NotesService {
 		};
 		const result = await this._pool.query(query);
 		if (!result.rows.length) {
-			throw new NotFoundError('Catatan gagal dihapus. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 }

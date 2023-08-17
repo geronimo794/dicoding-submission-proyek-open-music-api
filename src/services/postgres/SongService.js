@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import mapSongDBToModel from '../../mapping/song.js';
+import ResponseHelper from '../../utils/ResponseHelper.js';
 
 const { Pool } = pgPkg;
 
@@ -23,7 +24,7 @@ class SongsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows[0].id) {
-			throw new InvariantError('Song gagal ditambahkan');
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
 		}
 		return result.rows[0].id;
 	}
@@ -57,7 +58,7 @@ class SongsService {
 
 		// Throw not found
 		if (!result.rows.length) {
-			throw new NotFoundError('Song tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 		return result.rows.map(mapSongDBToModel);
 	}
@@ -69,7 +70,7 @@ class SongsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Song tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 
 		return result.rows.map(mapSongDBToModel)[0];
@@ -84,7 +85,7 @@ class SongsService {
 		const result = await this._pool.query(query);
 
 		if (!result.rows.length) {
-			throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 	async deleteSongById(id) {
@@ -94,7 +95,7 @@ class SongsService {
 		};
 		const result = await this._pool.query(query);
 		if (!result.rows.length) {
-			throw new NotFoundError('Song gagal dihapus. Id tidak ditemukan');
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
 }
