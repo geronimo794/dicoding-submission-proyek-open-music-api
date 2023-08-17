@@ -10,25 +10,21 @@ class AlbumsHandler {
 		this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
 	}
 	async postAlbumHandler(request, h) {
-		try {
-			this._validator.validateAlbumPayload(request.payload);
+		this._validator.validateAlbumPayload(request.payload);
 
-			const { name, year } = request.payload;
+		const { name, year } = request.payload;
 
-			const albumId = await this._service.addAlbum({ name, year });
+		const albumId = await this._service.addAlbum({ name, year });
 
-			const response = h.response({
-				status: 'success',
-				message: 'Catatan berhasil ditambahkan',
-				data: {
-					albumId,
-				},
-			});
-			response.code(201);
-			return response;
-		} catch (error) {
-			return error;
-		}
+		const response = h.response({
+			status: 'success',
+			message: 'Catatan berhasil ditambahkan',
+			data: {
+				albumId,
+			},
+		});
+		response.code(201);
+		return response;
 	}
 	async getAlbumsHandler() {
 		const albums = await this._service.getAlbums();
@@ -40,45 +36,33 @@ class AlbumsHandler {
 		};
 	}
 	async getAlbumByIdHandler(request) {
-		try {
-			const { id } = request.params;
-			const data = await this._service.getAlbumById(id);
-			return {
-				status: 'success',
-				data: {
-					album: data,
-				},
-			};
-		} catch (error) {
-			return error;
-		}
+		const { id } = request.params;
+		const data = await this._service.getAlbumById(id);
+		return {
+			status: 'success',
+			data: {
+				album: data,
+			},
+		};
 	}
 	async putAlbumByIdHandler(request) {
-		try {
-			this._validator.validateAlbumPayload(request.payload);
-			const { id } = request.params;
+		this._validator.validateAlbumPayload(request.payload);
+		const { id } = request.params;
 
-			await this._service.editAlbumById(id, request.payload);
+		await this._service.editAlbumById(id, request.payload);
 
-			return {
-				status: 'success',
-				message: 'Catatan berhasil diperbarui',
-			};
-		} catch (error) {
-			return error;		
-		}
+		return {
+			status: 'success',
+			message: 'Catatan berhasil diperbarui',
+		};
 	}
 	async deleteAlbumByIdHandler(request) {
-		try {
-			const { id } = request.params;
-			await this._service.deleteAlbumById(id);
-			return {
-				status: 'success',
-				message: 'Catatan berhasil dihapus',
-			};
-		} catch (error) {
-			return error;
-		}
+		const { id } = request.params;
+		await this._service.deleteAlbumById(id);
+		return {
+			status: 'success',
+			message: 'Catatan berhasil dihapus',
+		};
 	}
 }
 
