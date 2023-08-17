@@ -1,3 +1,5 @@
+import ResponseHelper from '../../utils/ResponseHelper.js';
+
 class AlbumsHandler {
 	constructor(service, validator) {
 		this._service = service;
@@ -7,56 +9,34 @@ class AlbumsHandler {
 		this._validator.validateAlbumPayload(request.payload);
 
 		const { name, year } = request.payload;
-
 		const albumId = await this._service.addAlbum({ name, year });
 
-		const response = h.response({
-			status: 'success',
-			message: 'Catatan berhasil ditambahkan',
-			data: {
-				albumId,
-			},
-		});
-		response.code(201);
-		return response;
+		return ResponseHelper.buildSuccessResponse(h, ResponseHelper.RESPONSE_CREATED, {albumId});
 	}
-	async getAlbumsHandler() {
+	async getAlbumsHandler(_, h) {
 		const albums = await this._service.getAlbums();
-		return {
-			status: 'success',
-			data: {
-				albums: albums,
-			},
-		};
+
+		return ResponseHelper.buildSuccessResponse(h, ResponseHelper.RESPONSE_OK, {albums: albums,});
 	}
-	async getAlbumByIdHandler(request) {
+	async getAlbumByIdHandler(request, h) {
 		const { id } = request.params;
 		const data = await this._service.getAlbumById(id);
-		return {
-			status: 'success',
-			data: {
-				album: data,
-			},
-		};
+		
+		return ResponseHelper.buildSuccessResponse(h, ResponseHelper.RESPONSE_OK, {album: data});
 	}
-	async putAlbumByIdHandler(request) {
+	async putAlbumByIdHandler(request, h) {
 		this._validator.validateAlbumPayload(request.payload);
 		const { id } = request.params;
 
 		await this._service.editAlbumById(id, request.payload);
 
-		return {
-			status: 'success',
-			message: 'Catatan berhasil diperbarui',
-		};
+		return ResponseHelper.buildSuccessResponse(h, ResponseHelper.RESPONSE_UPDATED);
 	}
-	async deleteAlbumByIdHandler(request) {
+	async deleteAlbumByIdHandler(request, h) {
 		const { id } = request.params;
 		await this._service.deleteAlbumById(id);
-		return {
-			status: 'success',
-			message: 'Catatan berhasil dihapus',
-		};
+
+		return ResponseHelper.buildSuccessResponse(h, ResponseHelper.RESPONSE_DELETED);
 	}
 }
 

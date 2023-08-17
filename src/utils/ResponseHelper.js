@@ -10,11 +10,16 @@ const RESPONSE_FAILED = 'Action failed';
 
 class ResponseHelper{
 	static buildSuccessResponse(h, responseMessage, responseData) {
-		const response = h.response({
+		const responseStructure = {
 			status: 'success',
 			message: responseMessage,
-			data: responseData,
-		});
+		};
+
+		// If there is data, create new data key
+		if(responseData){
+			responseStructure['data'] = responseData;
+		}
+		const response = h.response(responseStructure);
 		response.code(this.getResponseCode(responseMessage));
 		return response;
 	}
