@@ -76,7 +76,7 @@ class SongsService {
 		const result = await this._pool.query(query);
 
 		// Throw not found
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 		return result.rows.map(mapSongDBToModel);
@@ -93,11 +93,11 @@ class SongsService {
 		};
 		const result = await this._pool.query(query);
 
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 
-		return result.rows.map(mapSongDBToModel)[0];
+		return mapSongDBToModel(result.rows[0]);
 	}
 	/**
 	 * Edit song by id
@@ -116,7 +116,7 @@ class SongsService {
 
 		const result = await this._pool.query(query);
 
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
@@ -130,7 +130,7 @@ class SongsService {
 			values: [id],
 		};
 		const result = await this._pool.query(query);
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}

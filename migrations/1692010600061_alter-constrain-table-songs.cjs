@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-
-exports.shorthands = undefined;
 
 exports.up = (pgm) => {
 	pgm.addConstraint( 'songs', 'album_id_on_songs_table_fkey', {
