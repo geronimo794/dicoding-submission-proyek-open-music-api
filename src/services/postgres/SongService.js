@@ -24,13 +24,12 @@ class SongsService {
 	async addSong({title, year, genre, performer, duration, albumId}) {
 		const id = nanoid(16);
 		const createdAt = new Date().toISOString();
-		const updatedAt = createdAt;
 
 		const query = {
 			text: 'INSERT INTO songs '+
-				'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
+				'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $8) RETURNING id',
 			values: [id, title, year, genre, performer, duration, albumId,
-				createdAt, updatedAt],
+				createdAt],
 		};
 
 		const result = await this._pool.query(query);
@@ -76,7 +75,7 @@ class SongsService {
 		const result = await this._pool.query(query);
 
 		// Throw not found
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 		return result.rows.map(mapSongDBToModel);
@@ -93,11 +92,11 @@ class SongsService {
 		};
 		const result = await this._pool.query(query);
 
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 
-		return result.rows.map(mapSongDBToModel)[0];
+		return mapSongDBToModel(result.rows[0]);
 	}
 	/**
 	 * Edit song by id
@@ -116,7 +115,7 @@ class SongsService {
 
 		const result = await this._pool.query(query);
 
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
@@ -130,7 +129,7 @@ class SongsService {
 			values: [id],
 		};
 		const result = await this._pool.query(query);
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 	}
