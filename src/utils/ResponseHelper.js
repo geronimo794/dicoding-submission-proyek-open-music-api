@@ -5,6 +5,7 @@ const RESPONSE_NOT_FOUND = 'Data not found';
 const RESPONSE_DELETED = 'Data deleted';
 const RESPONSE_INTERNAL_ERROR = 'Internal server error';
 const RESPONSE_FAILED = 'Action failed';
+const RESPONSE_DUPLICATE_ENTRY = 'Duplicate entry';
 
 /**
  * Response Helper contain static function
@@ -60,6 +61,7 @@ class ResponseHelper {
 		case RESPONSE_CREATED:
 			return 201;
 		case RESPONSE_FAILED:
+		case RESPONSE_DUPLICATE_ENTRY:
 			return 400;
 		case RESPONSE_NOT_FOUND:
 			return 404;
@@ -110,6 +112,12 @@ class ResponseHelper {
 	 */
 	static get RESPONSE_FAILED() {
 		return RESPONSE_FAILED;
+	}
+	/**
+	 * Get function RESPONSE_DUPLICATE_ENTRY
+	 */
+	static get RESPONSE_DUPLICATE_ENTRY() {
+		return RESPONSE_DUPLICATE_ENTRY;
 	}
 }
 

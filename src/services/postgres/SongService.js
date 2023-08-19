@@ -6,6 +6,7 @@ import mapSongDBToModel from '../../mapping/song.js';
 import ResponseHelper from '../../utils/ResponseHelper.js';
 
 const {Pool} = pgPkg;
+
 /**
  * Song service action
  */
