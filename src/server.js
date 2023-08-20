@@ -4,17 +4,17 @@ import ClientError from './exceptions/ClientError.js';
 
 // Albums API
 import albums from './api/albums/index.js';
-import AlbumService from './services/postgres/AlbumService.js';
+import AlbumsService from './services/postgres/AlbumsService.js';
 import AlbumValidator from './validator/albums/index.js';
 
 // Songs API
 import songs from './api/songs/index.js';
-import SongService from './services/postgres/SongService.js';
+import SongsService from './services/postgres/SongsService.js';
 import SongValidator from './validator/songs/index.js';
 
 // Users API
 import users from './api/users/index.js';
-import UserService from './services/postgres/UserService.js';
+import UsersService from './services/postgres/UsersService.js';
 import UserValidator from './validator/users/index.js';
 
 
@@ -22,9 +22,9 @@ import UserValidator from './validator/users/index.js';
 import ResponseHelper from './utils/ResponseHelper.js';
 
 const init = async () => {
-	const albumsService = new AlbumService();
-	const songsService = new SongService();
-	const usersService = new UserService();
+	const albumsService = new AlbumsService();
+	const songsService = new SongsService();
+	const usersService = new UsersService();
 
 	const server = _server({
 		port: process.env.PORT,
