@@ -5,7 +5,9 @@ const RESPONSE_NOT_FOUND = 'Data not found';
 const RESPONSE_DELETED = 'Data deleted';
 const RESPONSE_INTERNAL_ERROR = 'Internal server error';
 const RESPONSE_FAILED = 'Action failed';
+const RESPONSE_INVALID_INPUT = 'Invalid input';
 const RESPONSE_DUPLICATE_ENTRY = 'Duplicate entry';
+const RESPONSE_UNAUTHORIZED = 'Unauthorized user';
 
 /**
  * Response Helper contain static function
@@ -62,7 +64,10 @@ class ResponseHelper {
 			return 201;
 		case RESPONSE_FAILED:
 		case RESPONSE_DUPLICATE_ENTRY:
+		case RESPONSE_INVALID_INPUT:
 			return 400;
+		case RESPONSE_UNAUTHORIZED:
+			return 401;
 		case RESPONSE_NOT_FOUND:
 			return 404;
 		case RESPONSE_INTERNAL_ERROR:
@@ -118,6 +123,18 @@ class ResponseHelper {
 	 */
 	static get RESPONSE_DUPLICATE_ENTRY() {
 		return RESPONSE_DUPLICATE_ENTRY;
+	}
+	/**
+	 * Get function RESPONSE_INVALID_INPUT
+	 */
+	static get RESPONSE_INVALID_INPUT() {
+		return RESPONSE_INVALID_INPUT;
+	}
+	/**
+	 * Get function RESPONSE_UNAUTHORIZED
+	 */
+	static get RESPONSE_UNAUTHORIZED() {
+		return RESPONSE_UNAUTHORIZED;
 	}
 }
 
