@@ -17,6 +17,12 @@ import users from './api/users/index.js';
 import UsersService from './services/postgres/UsersService.js';
 import UserValidator from './validator/users/index.js';
 
+// Authentications API
+import authentications from './api/authentications/index.js';
+import AuthenticationsService from
+	'./services/postgres/AuthenticationsService.js';
+import TokenManager from './tokenize/TokenManager.js';
+import AuthenticationsValidator from './validator/authentications/index.js';
 
 // Get response helper
 import ResponseHelper from './utils/ResponseHelper.js';
@@ -25,6 +31,7 @@ const init = async () => {
 	const albumsService = new AlbumsService();
 	const songsService = new SongsService();
 	const usersService = new UsersService();
+	const authenticationsService = new AuthenticationsService();
 
 	const server = _server({
 		port: process.env.PORT,
@@ -55,6 +62,15 @@ const init = async () => {
 			service: songsService,
 			validator: SongValidator,
 		},
+	},
+	{
+		plugin: authentications,
+		options: {
+			authenticationsService,
+			usersService,
+			tokenManager: TokenManager,
+			validator: AuthenticationsValidator,
+		},
 	}]);
 
 	server.ext('onPreResponse', (request, h) => {
@@ -72,9 +88,12 @@ const init = async () => {
 				return ResponseHelper.buildErrorResponse(h, response.message);
 			}
 
+			// Show error log
+			console.log(response);
+
 			// Penanganan server jika error diluar client
 			return ResponseHelper.buildErrorResponse(h,
-				response.RESPONSE_INTERNAL_ERROR);
+				ResponseHelper.RESPONSE_INTERNAL_ERROR);
 		}
 
 		// Jika tidak ada error maka akan melanjutkan response

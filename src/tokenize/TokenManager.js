@@ -1,6 +1,6 @@
-import {Jwt} from '@hapi/jwt';
-import ResponseHelper from '../../utils/ResponseHelper.js';
-import InvariantError from './InvariantError.js';
+import Jwt from '@hapi/jwt';
+import ResponseHelper from '../utils/ResponseHelper.js';
+import InvariantError from '../exceptions/InvariantError.js';
 
 const TokenManager = {
 	generateAccessToken: (payload) =>

@@ -4,7 +4,8 @@ import routes from './route.js';
 export default {
 	name: 'authentications',
 	version: '1.0.0',
-	register: async (server, {authenticationsService,
+	register: async (server, {
+		authenticationsService,
 		usersService,
 		tokenManager,
 		validator,

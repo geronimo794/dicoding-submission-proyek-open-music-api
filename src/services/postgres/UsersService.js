@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import ResponseHelper from '../../utils/ResponseHelper.js';
+import AuthenticationError from '../../exceptions/AuthenticationError.js';
 
 const {Pool} = pgPkg;
 
@@ -71,6 +72,33 @@ class UsersService {
 		if (result.rowCount > 0) {
 			throw new InvariantError(ResponseHelper.RESPONSE_DUPLICATE_ENTRY);
 		}
+	}
+	/**
+	 * Verify username and password(login)
+	 * @param {*} username
+	 * @param {*} password
+	 * @return {string} user id
+	 */
+	async verifyUserCredential(username, password) {
+		console.log(password);
+
+		const query = {
+			text: 'SELECT id, password FROM users WHERE username = $1',
+			values: [username],
+		};
+
+		const result = await this._pool.query(query);
+		if (!result.rowCount) {
+			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
+		}
+
+		const {id, password: hashedPassword} = result.rows[0];
+		const match = await bcrypt.compare(password, hashedPassword);
+
+		if (!match) {
+			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
+		}
+		return id;
 	}
 }
 

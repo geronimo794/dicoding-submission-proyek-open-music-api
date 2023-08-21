@@ -1,7 +1,5 @@
 import pgPkg from 'pg';
 import InvariantError from '../../exceptions/InvariantError.js';
-import AuthenticationError from '../../exceptions/AuthenticationError.js';
-import bcrypt from 'bcrypt';
 import ResponseHelper from '../../utils/ResponseHelper.js';
 
 const {Pool} = pgPkg;
@@ -54,31 +52,6 @@ class AuthenticationsService {
 			values: [token],
 		};
 		await this._pool.query(query);
-	}
-	/**
-	 * Verify username and password(login)
-	 * @param {*} username
-	 * @param {*} password
-	 * @return {string} user id
-	 */
-	async verifyUserCredential(username, password) {
-		const query = {
-			text: 'SELECT id, password FROM users WHERE username = $1',
-			values: [username],
-		};
-
-		const result = await this._pool.query(query);
-		if (!result.rowCount) {
-			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
-		}
-
-		const {id, password: hashedPassword} = result.rows[0];
-		const match = await bcrypt.compare(password, hashedPassword);
-
-		if (!match) {
-			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
-		}
-		return id;
 	}
 }
 
