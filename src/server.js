@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import {server as _server} from '@hapi/hapi';
+import Jwt from '@hapi/jwt';
 import ClientError from './exceptions/ClientError.js';
 
 // Albums API
@@ -33,6 +34,7 @@ const init = async () => {
 	const usersService = new UsersService();
 	const authenticationsService = new AuthenticationsService();
 
+	// Servert init
 	const server = _server({
 		port: process.env.PORT,
 		host: process.env.HOST,
@@ -42,6 +44,31 @@ const init = async () => {
 			},
 		},
 	});
+
+	// Registrasi plugin eksternal JWT
+	await server.register([
+		{
+			plugin: Jwt,
+		},
+	]);
+
+	// Mendefinisikan strategy autentikasi jwt
+	server.auth.strategy('auth_jwt', 'jwt', {
+		keys: process.env.ACCESS_TOKEN_KEY,
+		verify: {
+			aud: false,
+			iss: false,
+			sub: false,
+			maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+		},
+		validate: (artifacts) => ({
+			isValid: true,
+			credentials: {
+				id: artifacts.decoded.payload.id,
+			},
+		}),
+	});
+
 	await server.register([{
 		plugin: users,
 		options: {
