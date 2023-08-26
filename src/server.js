@@ -134,7 +134,7 @@ const init = async () => {
 
 			// Penanganan server jika error diluar client
 			return ResponseHelper.buildErrorResponse(h,
-				ResponseHelper.RESPONSE_INTERNAL_ERROR);
+				response);
 		}
 
 		// Jika tidak ada error maka akan melanjutkan response

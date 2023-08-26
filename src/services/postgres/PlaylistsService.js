@@ -54,7 +54,7 @@ class PlaylistssService {
 					'FROM playlists ' +
 					'LEFT JOIN users ' +
 					'ON playlists.user_id = users.id ' +
-					'WHERE user_id = $1',
+					'WHERE playlists.user_id = $1',
 			values: [userId],
 		};
 		console.log(query.text);
@@ -71,8 +71,16 @@ class PlaylistssService {
 	 * @param {*} id
 	 */
 	async deletePlaylistsById(id) {
+		// Delete all the related playlist on playlist_songs
+		const queryPlaylistSongs = {
+			text: 'DELETE FROM playlist_songs WHERE playlist_id = $1',
+			values: [id],
+		};
+		await this._pool.query(queryPlaylistSongs);
+
+		// Delete the playlist
 		const query = {
-			text: 'DELETE FROM songs WHERE id = $1 RETURNING id',
+			text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
 			values: [id],
 		};
 		const result = await this._pool.query(query);
@@ -108,6 +116,18 @@ class PlaylistssService {
 	 * @param {*} songId
 	 */
 	async addPlaylistSong(playlistId, songId) {
+		// Find the song first
+		const querySong = {
+			text: 'SELECT * FROM songs WHERE id = $1',
+			values: [songId],
+		};
+		const resultSong = await this._pool.query(querySong);
+
+		if (!resultSong.rowCount) {
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
+		}
+
+		// Proceed create song
 		const createdAt = new Date().toISOString();
 		const id = 'playlist-song-' + nanoid(16);
 
@@ -120,7 +140,7 @@ class PlaylistssService {
 
 		const result = await this._pool.query(query);
 
-		if (!result.rows[0].id) {
+		if (!result.rowCount) {
 			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
 		}
 		return result.rows[0].id;
@@ -136,7 +156,7 @@ class PlaylistssService {
 					'FROM playlists ' +
 					'LEFT JOIN users ' +
 					'ON playlists.user_id = users.id ' +
-					'WHERE id = $1',
+					'WHERE playlists.id = $1',
 			values: [playlistId],
 		};
 		const result = await this._pool.query(query);
@@ -149,7 +169,7 @@ class PlaylistssService {
 		const singleData = result.rows[0];
 
 		const querySong = {
-			text: 'SELECT songs.id, songs.title, songs.title ' +
+			text: 'SELECT songs.id, songs.title, songs.performer ' +
 				'FROM playlist_songs '+
 				'LEFT JOIN songs ' +
 				'ON playlist_songs.song_id = songs.id ' +
@@ -157,7 +177,7 @@ class PlaylistssService {
 			values: [playlistId],
 		};
 		const resultSong = await this._pool.query(querySong);
-		singleData['songs'] = resultSong;
+		singleData['songs'] = resultSong.rows;
 		return singleData;
 	}
 	/**
@@ -166,9 +186,10 @@ class PlaylistssService {
 	 * @param {*} songId
 	 */
 	async deletePlaylistSong(playlistId, songId) {
+		// Delete the playlist
 		const query = {
 			text: 'DELETE FROM playlist_songs '+
-				'WHERE playlist_id = $1, song_id = $2 RETURNING id',
+				'WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
 			values: [playlistId, songId],
 		};
 		const result = await this._pool.query(query);

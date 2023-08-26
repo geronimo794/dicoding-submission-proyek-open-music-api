@@ -77,6 +77,9 @@ class PlaylistsHandler {
 	 */
 	async postPlaylistSongHandler(request, h) {
 		const {id} = request.params; // playlistId
+
+		// Vefied input data
+		await this._validator.validatePlaylistSongPayload(request.payload);
 		const {songId} = request.payload;
 
 		// Get userId from JWT Token
@@ -107,7 +110,7 @@ class PlaylistsHandler {
 		const playlist = await this._service.getPlaylistSongByPlaylistId(id);
 
 		return ResponseHelper.buildSuccessResponse(h,
-			ResponseHelper.RESPONSE_CREATED, {playlist});
+			ResponseHelper.RESPONSE_OK, {playlist});
 	}
 	/**
 	 * Add new song to playlist handler
@@ -116,6 +119,9 @@ class PlaylistsHandler {
 	 */
 	async deletePlaylistSongHandler(request, h) {
 		const {id} = request.params; // playlistId
+
+		// Vefied input data
+		await this._validator.validatePlaylistSongPayload(request.payload);
 		const {songId} = request.payload;
 
 		// Get userId from JWT Token
@@ -127,7 +133,7 @@ class PlaylistsHandler {
 		const playlistSongId = await this._service.deletePlaylistSong(id, songId);
 
 		return ResponseHelper.buildSuccessResponse(h,
-			ResponseHelper.RESPONSE_CREATED, {playlistSongId});
+			ResponseHelper.RESPONSE_OK, {playlistSongId});
 	}
 }
 
