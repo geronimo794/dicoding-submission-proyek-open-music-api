@@ -34,23 +34,22 @@ const routes = (handler) => [
 			auth: 'auth_jwt',
 		},
 	},
-	{
-		method: 'GET',
-		path: '/playlists/{id}/songs',
-		handler: (request, h) => handler.getPlaylistSongsHandler(request, h),
-		options: {
-			auth: 'auth_jwt',
-		},
-	},
-	{
-		method: 'DELETE',
-		path: '/playlists/{id}/songs',
-		handler: (request, h) => handler.deletePlaylistSongByIdHandler(request, h),
-		options: {
-			auth: 'auth_jwt',
-		},
-	},
-
+	// {
+	// 	method: 'GET',
+	// 	path: '/playlists/{id}/songs',
+	// 	handler: (request, h) => handler.getPlaylistSongsHandler(request, h),
+	// 	options: {
+	// 		auth: 'auth_jwt',
+	// 	},
+	// },
+	// {
+	// 	method: 'DELETE',
+	// 	path: '/playlists/{id}/songs',
+	// 	handler: (request, h) => handler.deletePlaylistSongByIdHandler(request, h),
+	// 	options: {
+	// 		auth: 'auth_jwt',
+	// 	},
+	// },
 
 ];
 export default routes;

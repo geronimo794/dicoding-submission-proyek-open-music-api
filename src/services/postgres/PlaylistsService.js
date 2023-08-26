@@ -18,6 +18,9 @@ class PlaylistssService {
 		this._pool = new Pool();
 	}
 	/**
+	 * PLAYLIST SERVICE
+	 */
+	/**
 	 * Add song function with query
 	 * @param {*} param0 Object of song
 	 * @return {object} Object of inserted id
@@ -95,6 +98,58 @@ class PlaylistssService {
 			throw new AuthorizationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
 		}
 	}
+	/**
+	 * PLAYLIST SONG SERVICE
+	 */
+	/**
+	 * Add song to playlist
+	 * @param {*} playlistId
+	 * @param {*} songId
+	 */
+	async addPlaylistSong(playlistId, songId) {
+		const createdAt = new Date().toISOString();
+		const id = 'playlist-song-' + nanoid(16);
+
+		const query = {
+			text: 'INSERT INTO '+
+				'playlist_songs(id, playlist_id, song_id, created_at, updated_at) ' +
+				'VALUES($1, $2, $3, $4, $4) RETURNING id',
+			values: [id, playlistId, songId, createdAt],
+		};
+
+		const result = await this._pool.query(query);
+
+		if (!result.rows[0].id) {
+			console.log('BAD SONG ID');
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
+		}
+		return result.rows[0].id;
+	}
+	/**
+	 * Add song to playlist
+	 * @param {*} playlistId
+	 * @param {*} songId
+	 */
+	async addPlaylistSong(playlistId, songId) {
+		const createdAt = new Date().toISOString();
+		const id = 'playlist-song-' + nanoid(16);
+
+		const query = {
+			text: 'INSERT INTO '+
+				'playlist_songs(id, playlist_id, song_id, created_at, updated_at) ' +
+				'VALUES($1, $2, $3, $4, $4) RETURNING id',
+			values: [id, playlistId, songId, createdAt],
+		};
+
+		const result = await this._pool.query(query);
+
+		if (!result.rows[0].id) {
+			console.log('BAD SONG ID');
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
+		}
+		return result.rows[0].id;
+		}
+	
 }
 
 export default PlaylistssService;

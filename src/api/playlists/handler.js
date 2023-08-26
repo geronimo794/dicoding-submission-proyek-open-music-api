@@ -61,7 +61,7 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		this._service.verifyPlaylistOwner(id, userId);
+		await this._service.verifyPlaylistOwner(id, userId);
 
 		await this._service.deletePlaylistsById(id);
 		return ResponseHelper.buildSuccessResponse(h,
@@ -70,6 +70,27 @@ class PlaylistsHandler {
 	/**
 	 * PLAYLIST SONG HANDLER
 	 */
+	/**
+	 * Add new song to playlist handler
+	 * @param {*} request
+	 * @param {*} h
+	 */
+	async postPlaylistSongHandler(request, h) {
+		const {id} = request.params; // playlistId
+		const {songId} = request.payload;
+
+		// Get userId from JWT Token
+		const {id: userId} = request.auth.credentials;
+
+		// Verify the resource before proceed
+		await this._service.verifyPlaylistOwner(id, userId);
+		console.log('postPlaylistSongHandler');
+
+		const playlistSongId = await this._service.addPlaylistSong(id, songId);
+
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_CREATED, {playlistSongId});
+	}
 }
 
 export default PlaylistsHandler;
