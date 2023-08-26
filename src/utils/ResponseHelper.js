@@ -7,8 +7,9 @@ const RESPONSE_INTERNAL_ERROR = 'Internal server error';
 const RESPONSE_FAILED = 'Action failed';
 const RESPONSE_INVALID_INPUT = 'Invalid input';
 const RESPONSE_DUPLICATE_ENTRY = 'Duplicate entry';
+// Auth
 const RESPONSE_UNAUTHORIZED = 'Unauthorized user';
-
+const RESPONSE_UNAUTHENTICATED = 'Unuthenticated user';
 /**
  * Response Helper contain static function
  */
@@ -66,8 +67,10 @@ class ResponseHelper {
 		case RESPONSE_DUPLICATE_ENTRY:
 		case RESPONSE_INVALID_INPUT:
 			return 400;
-		case RESPONSE_UNAUTHORIZED:
+		case RESPONSE_UNAUTHENTICATED:
 			return 401;
+		case RESPONSE_UNAUTHORIZED:
+			return 403;
 		case RESPONSE_NOT_FOUND:
 			return 404;
 		case RESPONSE_INTERNAL_ERROR:
@@ -135,6 +138,12 @@ class ResponseHelper {
 	 */
 	static get RESPONSE_UNAUTHORIZED() {
 		return RESPONSE_UNAUTHORIZED;
+	}
+	/**
+	 * Get function RESPONSE_UNAUTHENTICATED
+	 */
+	static get RESPONSE_UNAUTHENTICATED() {
+		return RESPONSE_UNAUTHENTICATED;
 	}
 }
 

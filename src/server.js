@@ -18,6 +18,12 @@ import users from './api/users/index.js';
 import UsersService from './services/postgres/UsersService.js';
 import UserValidator from './validator/users/index.js';
 
+// Users API
+import playlists from './api/playlists/index.js';
+import PlaylistsService from './services/postgres/PlaylistsService.js';
+import PlaylistValidator from './validator/playlists/index.js';
+
+
 // Authentications API
 import authentications from './api/authentications/index.js';
 import AuthenticationsService from
@@ -33,6 +39,7 @@ const init = async () => {
 	const songsService = new SongsService();
 	const usersService = new UsersService();
 	const authenticationsService = new AuthenticationsService();
+	const playlistsService = new PlaylistsService();
 
 	// Servert init
 	const server = _server({
@@ -88,6 +95,13 @@ const init = async () => {
 		options: {
 			service: songsService,
 			validator: SongValidator,
+		},
+	},
+	{
+		plugin: playlists,
+		options: {
+			service: playlistsService,
+			validator: PlaylistValidator,
 		},
 	},
 	{

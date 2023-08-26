@@ -89,14 +89,14 @@ class UsersService {
 
 		const result = await this._pool.query(query);
 		if (!result.rowCount) {
-			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
+			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHENTICATED);
 		}
 
 		const {id, password: hashedPassword} = result.rows[0];
 		const match = await bcrypt.compare(password, hashedPassword);
 
 		if (!match) {
-			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
+			throw new AuthenticationError(ResponseHelper.RESPONSE_UNAUTHENTICATED);
 		}
 		return id;
 	}
