@@ -10,13 +10,16 @@ class PlaylistsHandler {
 	 */
 	/**
 	 * Constructor inject with function dependencies
-	 * @param {*} service
+	 * @param {*} playlistsService
+	 * @param {*} collaborationsService
 	 * @param {*} validator
 	 */
-	constructor(service, validator) {
-		this._service = service;
+	constructor(playlistsService, collaborationsService, validator) {
+		this._playlistsService = playlistsService;
+		this._collaborationsService = collaborationsService;
 		this._validator = validator;
 	}
+
 	/**
 	 * Add single playlist handler
 	 * @param {*} request
@@ -30,7 +33,8 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		const {name} = request.payload;
-		const playlistId = await this._service.addPlaylists({name, userId});
+		const playlistId =
+			await this._playlistsService.addPlaylists({name, userId});
 
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_CREATED, {playlistId});
@@ -45,7 +49,7 @@ class PlaylistsHandler {
 		// Get userId from JWT Token
 		const {id: userId} = request.auth.credentials;
 
-		const data = await this._service.getPlaylistsByUserId(userId);
+		const data = await this._playlistsService.getPlaylistsByUserId(userId);
 
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_OK, {playlists: data});
@@ -63,9 +67,9 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		await this._service.verifyPlaylistOwner(id, userId);
+		await this._playlistsService.verifyPlaylistOwner(id, userId);
 
-		await this._service.deletePlaylistsById(id);
+		await this._playlistsService.deletePlaylistsById(id);
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_DELETED);
 	}
@@ -88,12 +92,17 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		await this._service.verifyPlaylistOwner(id, userId);
+		const isAllowCollaborate = await this._collaborationsService.
+			isAllowCollaborate({playlistId: id, userId});
+		if (!isAllowCollaborate) {
+			await this._playlistsService.verifyPlaylistOwner(id, userId);
+		}
 
-		const playlistSongId = await this._service.addPlaylistSong(id, songId);
+		const playlistSongId =
+			await this._playlistsService.addPlaylistSong(id, songId);
 
 		// Add activities log: ADD
-		await this._service.addPlaylistSongActivity(
+		await this._playlistsService.addPlaylistSongActivity(
 			id, songId, userId, ActivityAction.ADD);
 
 		return ResponseHelper.buildSuccessResponse(h,
@@ -111,9 +120,14 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		await this._service.verifyPlaylistOwner(id, userId);
+		const isAllowCollaborate = await this._collaborationsService.
+			isAllowCollaborate({playlistId: id, userId});
+		if (!isAllowCollaborate) {
+			await this._playlistsService.verifyPlaylistOwner(id, userId);
+		}
 
-		const playlist = await this._service.getPlaylistSongByPlaylistId(id);
+		const playlist =
+			await this._playlistsService.getPlaylistSongByPlaylistId(id);
 
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_OK, {playlist});
@@ -134,12 +148,17 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		await this._service.verifyPlaylistOwner(id, userId);
+		const isAllowCollaborate = await this._collaborationsService.
+			isAllowCollaborate({playlistId: id, userId});
+		if (!isAllowCollaborate) {
+			await this._playlistsService.verifyPlaylistOwner(id, userId);
+		}
 
-		const playlistSongId = await this._service.deletePlaylistSong(id, songId);
+		const playlistSongId =
+			await this._playlistsService.deletePlaylistSong(id, songId);
 
 		// Add activities log: DELETE
-		await this._service.addPlaylistSongActivity(
+		await this._playlistsService.addPlaylistSongActivity(
 			id, songId, userId, ActivityAction.DElETE);
 
 		return ResponseHelper.buildSuccessResponse(h,
@@ -157,10 +176,14 @@ class PlaylistsHandler {
 		const {id: userId} = request.auth.credentials;
 
 		// Verify the resource before proceed
-		await this._service.verifyPlaylistOwner(id, userId);
+		const isAllowCollaborate = await this._collaborationsService.
+			isAllowCollaborate({playlistId: id, userId});
+		if (!isAllowCollaborate) {
+			await this._playlistsService.verifyPlaylistOwner(id, userId);
+		}
 
 		// Playlist song activities
-		const response = await this._service.getPlaylistSongActivities(id);
+		const response = await this._playlistsService.getPlaylistSongActivities(id);
 
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_OK, response);

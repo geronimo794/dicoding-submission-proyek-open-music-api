@@ -11,7 +11,7 @@ const {Pool} = pgPkg;
 /**
  * Playlists service action
  */
-class PlaylistssService {
+class PlaylistsService {
 	/**
 	 * Constructor to get psql pool
 	 */
@@ -50,6 +50,9 @@ class PlaylistssService {
 	 * @return {object} Object of selected id
 	 */
 	async getPlaylistsByUserId(userId) {
+		const rowsData = [];
+
+		// Get from current self
 		const query = {
 			text: 'SELECT playlists.id, name, users.username AS username '+
 					'FROM playlists ' +
@@ -58,14 +61,26 @@ class PlaylistssService {
 					'WHERE playlists.user_id = $1',
 			values: [userId],
 		};
-		console.log(query.text);
 		const result = await this._pool.query(query);
+		rowsData.push(...result.rows);
 
-		if (!result.rowCount) {
-			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
-		}
+		// Get from collaborated
+		const queryCollab = {
+			text: 'SELECT playlists.id, name, users.username AS username '+
+					'FROM collaborations ' +
+					// Relation with playlist
+					'LEFT JOIN playlists ' +
+					'ON collaborations.playlist_id = playlists.id ' +
+					// Relation with users
+					'LEFT JOIN users ' +
+					'ON playlists.user_id = users.id ' +
+					'WHERE collaborations.user_id = $1',
+			values: [userId],
+		};
+		const resultCollab = await this._pool.query(queryCollab);
+		rowsData.push(...resultCollab.rows);
 
-		return result.rows;
+		return rowsData;
 	}
 	/**
 	 * Delete song function by song id
@@ -100,7 +115,7 @@ class PlaylistssService {
 			values: [id],
 		};
 		const result = await this._pool.query(query);
-		if (!result.rows.length) {
+		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
 		}
 		const playlist = mapPlaylistDBToModel(result.rows[0]);
@@ -276,4 +291,4 @@ class PlaylistssService {
 	}
 }
 
-export default PlaylistssService;
+export default PlaylistsService;

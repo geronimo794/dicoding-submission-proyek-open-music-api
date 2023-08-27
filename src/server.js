@@ -18,11 +18,16 @@ import users from './api/users/index.js';
 import UsersService from './services/postgres/UsersService.js';
 import UserValidator from './validator/users/index.js';
 
-// Users API
+// Playlist API
 import playlists from './api/playlists/index.js';
 import PlaylistsService from './services/postgres/PlaylistsService.js';
 import PlaylistValidator from './validator/playlists/index.js';
 
+// Collaboration API
+import collaborations from './api/collaborations/index.js';
+import CollaborationsService from
+	'./services/postgres/CollaborationsService.js';
+import CollaborationValidator from './validator/collaborations/index.js';
 
 // Authentications API
 import authentications from './api/authentications/index.js';
@@ -40,6 +45,8 @@ const init = async () => {
 	const usersService = new UsersService();
 	const authenticationsService = new AuthenticationsService();
 	const playlistsService = new PlaylistsService();
+	const collaborationsService = new CollaborationsService();
+	console.log();
 
 	// Servert init
 	const server = _server({
@@ -100,8 +107,17 @@ const init = async () => {
 	{
 		plugin: playlists,
 		options: {
-			service: playlistsService,
+			playlistsService: playlistsService,
+			collaborationsService: collaborationsService,
 			validator: PlaylistValidator,
+		},
+	},
+	{
+		plugin: collaborations,
+		options: {
+			collaborationsService: collaborationsService,
+			playlistsService: playlistsService,
+			validator: CollaborationValidator,
 		},
 	},
 	{
