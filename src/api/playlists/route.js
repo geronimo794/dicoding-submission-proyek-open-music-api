@@ -51,5 +51,16 @@ const routes = (handler) => [
 		},
 	},
 
+	// Playlist song activities
+	{
+		method: 'GET',
+		path: '/playlists/{id}/activities',
+		handler: (request, h) =>
+			handler.getPlaylistSongActivitiesHandler(request, h),
+		options: {
+			auth: 'auth_jwt',
+		},
+	},
+
 ];
 export default routes;

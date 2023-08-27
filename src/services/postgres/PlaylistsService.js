@@ -229,6 +229,51 @@ class PlaylistssService {
 		}
 		return result.rows[0].id;
 	}
+	/**
+	 * Get data playlist song activities
+	 * @param {*} playlistId
+	 * @return {array} array of activities
+	 */
+	async getPlaylistSongActivities(playlistId) {
+		// Create object response
+		const response = {};
+
+		// Get playlist first
+		const queryPlaylist = {
+			text: 'SELECT id FROM playlists WHERE id = $1',
+			values: [playlistId],
+		};
+
+		const resultPlaylist = await this._pool.query(queryPlaylist);
+
+		if (!resultPlaylist.rowCount) {
+			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
+		}
+		response['playlistId'] = resultPlaylist.rows[0].id;
+
+		// Get activities data
+		const queryActivities = {
+			text: 'SELECT ' +
+				'users.username, ' +
+				'songs.title, ' +
+				'playlist_song_activities.action, ' +
+				'playlist_song_activities.created_at AS time ' +
+				// From table
+				'FROM playlist_song_activities ' +
+				// Relation with user
+				'LEFT JOIN users ' +
+				'ON playlist_song_activities.user_id = users.id ' +
+				// Relation with song
+				'LEFT JOIN songs ' +
+				'ON playlist_song_activities.song_id = songs.id ' +
+				'WHERE playlist_song_activities.playlist_id = $1',
+			values: [playlistId],
+		};
+
+		const resultActivities = await this._pool.query(queryActivities);
+		response['activities'] = resultActivities.rows;
+		return response;
+	}
 }
 
 export default PlaylistssService;

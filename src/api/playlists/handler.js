@@ -145,6 +145,26 @@ class PlaylistsHandler {
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_OK, {playlistSongId});
 	}
+	/**
+	 * Get playlist song activities handler
+	 * @param {*} request
+	 * @param {*} h
+	 */
+	async getPlaylistSongActivitiesHandler(request, h) {
+		const {id} = request.params; // playlistId
+
+		// Get userId from JWT Token
+		const {id: userId} = request.auth.credentials;
+
+		// Verify the resource before proceed
+		await this._service.verifyPlaylistOwner(id, userId);
+
+		// Playlist song activities
+		const response = await this._service.getPlaylistSongActivities(id);
+
+		return ResponseHelper.buildSuccessResponse(h,
+			ResponseHelper.RESPONSE_OK, response);
+	}
 }
 
 export default PlaylistsHandler;
