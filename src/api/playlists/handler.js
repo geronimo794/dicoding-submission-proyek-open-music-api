@@ -1,4 +1,6 @@
 import ResponseHelper from '../../utils/ResponseHelper.js';
+import ActivityAction from '../../utils/ActivityAction.js';
+
 /**
  * Playlist Request Handler
  */
@@ -90,6 +92,10 @@ class PlaylistsHandler {
 
 		const playlistSongId = await this._service.addPlaylistSong(id, songId);
 
+		// Add activities log: ADD
+		await this._service.addPlaylistSongActivity(
+			id, songId, userId, ActivityAction.ADD);
+
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_CREATED, {playlistSongId});
 	}
@@ -131,6 +137,10 @@ class PlaylistsHandler {
 		await this._service.verifyPlaylistOwner(id, userId);
 
 		const playlistSongId = await this._service.deletePlaylistSong(id, songId);
+
+		// Add activities log: DELETE
+		await this._service.addPlaylistSongActivity(
+			id, songId, userId, ActivityAction.DElETE);
 
 		return ResponseHelper.buildSuccessResponse(h,
 			ResponseHelper.RESPONSE_OK, {playlistSongId});

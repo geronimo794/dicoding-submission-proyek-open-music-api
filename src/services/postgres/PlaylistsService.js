@@ -18,6 +18,7 @@ class PlaylistssService {
 	constructor() {
 		this._pool = new Pool();
 	}
+
 	/**
 	 * PLAYLIST SERVICE
 	 */
@@ -107,6 +108,7 @@ class PlaylistssService {
 			throw new AuthorizationError(ResponseHelper.RESPONSE_UNAUTHORIZED);
 		}
 	}
+
 	/**
 	 * PLAYLIST SONG SERVICE
 	 */
@@ -195,6 +197,35 @@ class PlaylistssService {
 		const result = await this._pool.query(query);
 		if (!result.rowCount) {
 			throw new NotFoundError(ResponseHelper.RESPONSE_NOT_FOUND);
+		}
+		return result.rows[0].id;
+	}
+	/**
+	 * PLAYLIST SONG ACTIVITIES SERVICE
+	 */
+	/**
+	 * Create playlist song activity
+	 * @param {*} playlistId
+	 * @param {*} songId
+	 * @param {*} userId
+	 * @param {*} action
+	 * @return {string} playlist_song_activities_id
+	 */
+	async addPlaylistSongActivity(playlistId, songId, userId, action) {
+		const createdAt = new Date().toISOString();
+		const id = 'playlist-song-act-' + nanoid(16);
+
+		const query = {
+			text: 'INSERT INTO playlist_song_activities ' +
+				'(id, playlist_id, song_id, user_id, action, created_at, updated_at) ' +
+				'VALUES($1, $2, $3, $4, $5, $6, $6) RETURNING id',
+			values: [id, playlistId, songId, userId, action, createdAt],
+		};
+
+		const result = await this._pool.query(query);
+
+		if (!result.rowCount) {
+			throw new InvariantError(ResponseHelper.RESPONSE_FAILED);
 		}
 		return result.rows[0].id;
 	}
