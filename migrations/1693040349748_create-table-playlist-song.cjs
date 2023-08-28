@@ -27,7 +27,7 @@ exports.up = (pgm) => {
 		},
 	});
 
-	// Playlist ID FK
+	// Create playlist_id FK
 	pgm.addConstraint( 'playlist_songs',
 		'playlist_id_on_playlist_songs_table_fkey', {
 			foreignKeys: {
@@ -39,7 +39,7 @@ exports.up = (pgm) => {
 		},
 	);
 
-	// Song ID FK
+	// Create song_id FK
 	pgm.addConstraint( 'playlist_songs', 'song_id_on_playlist_songs_table_fkey', {
 		foreignKeys: {
 			columns: 'song_id',
@@ -51,7 +51,9 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+	// Delete song_id FK
 	pgm.dropConstraint( 'playlist_songs', 'song_id_on_playlist_songs_table_fkey');
+	// Delete playlist_id FK
 	pgm.dropConstraint( 'playlist_songs',
 		'playlist_id_on_playlist_songs_table_fkey');
 	pgm.dropTable('playlist_songs');

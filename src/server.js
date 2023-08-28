@@ -46,7 +46,6 @@ const init = async () => {
 	const authenticationsService = new AuthenticationsService();
 	const playlistsService = new PlaylistsService();
 	const collaborationsService = new CollaborationsService();
-	console.log();
 
 	// Servert init
 	const server = _server({

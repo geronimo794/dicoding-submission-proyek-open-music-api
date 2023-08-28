@@ -80,8 +80,6 @@ class UsersService {
 	 * @return {string} user id
 	 */
 	async verifyUserCredential(username, password) {
-		console.log(password);
-
 		const query = {
 			text: 'SELECT id, password FROM users WHERE username = $1',
 			values: [username],

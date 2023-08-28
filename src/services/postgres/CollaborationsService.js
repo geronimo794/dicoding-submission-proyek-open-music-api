@@ -79,13 +79,7 @@ class CollaborationsService {
 			values: [playlistId, userId],
 		};
 		const result = await this._pool.query(query);
-		console.log(playlistId);
-		console.log(userId);
-		console.log(result.rowCount);
-		if (!result.rowCount) {
-			return false;
-		}
-		return true;
+		return (result.rowCount > 0);
 	}
 }
 
